@@ -1,5 +1,7 @@
 # SudokuSolver
 
+Petite appli web en Angular 8 pour vous aider à solver vos sudokus 
+
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 8.2.0.
 
 ## Development server
