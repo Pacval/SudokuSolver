@@ -1,0 +1,87 @@
+.page {
+    width: fit-content;
+}
+
+.game {
+    width: fit-content;
+    padding: 5px;
+    background-color: black;
+}
+
+.case {
+    width: 50px;
+    height: 50px;
+    border: 1px solid black;
+    text-align: center;
+}
+
+.line-separator {
+    height: 5px;
+    width: 0px;
+}
+
+.column-separator {
+    height: 0px;
+    width: 5px;
+    display: inline-block;
+}
+
+/* CSS du bouton */
+
+.div-button {
+    width: 30%;
+    margin: 22px;
+    float: left;
+}
+
+.button-solve {
+    text-align: center;
+    cursor: pointer;
+    font-size: 24px;
+    margin: 0 0 0 100px;
+    border-radius: 4px;
+    background-color: #6d6d6dc4;
+    border: none;
+    padding: 20px;
+    width: 200px;
+    transition: all 0.5s;
+}
+
+.button-solve span {
+    cursor: pointer;
+    display: inline-block;
+    position: relative;
+    transition: 0.5s;
+}
+
+.button-solve span:after {
+    content: '»';
+    position: absolute;
+    opacity: 0;
+    top: 0;
+    right: -20px;
+    transition: 0.5s;
+}
+
+.button-solve:hover span {
+    padding-right: 25px;
+}
+
+.button-solve:hover span:after {
+    opacity: 1;
+    right: 0;
+}
+
+/* Pour enlever les flèches des spinners (input number) */
+
+input::-webkit-outer-spin-button, input::-webkit-inner-spin-button {
+    /* display: none; <- Crashes Chrome on hover */
+    -webkit-appearance: none;
+    margin: 0;
+    /* <-- Apparently some margin are still there even though it's hidden */
+}
+
+input[type=number] {
+    -moz-appearance: textfield;
+    /* Firefox */
+}
