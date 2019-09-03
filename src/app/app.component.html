@@ -15,4 +15,8 @@
     <button class="button-solve" (click)="solve()"><span>Solutionner</span></button>
   </div>
 
+  <div *ngIf="processing === true">
+    <h1>Processing</h1>
+  </div>
+
 </div>

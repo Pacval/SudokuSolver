@@ -1,5 +1,9 @@
 export class Case {
 
+    x: number;
+    y: number;
+    square: number; // indique dans quel carré (de 9 cases) est la case
+
     possibleValues: number[];
 
     filledStart: boolean;
@@ -7,7 +11,13 @@ export class Case {
     found: boolean;
     finalValue: number;
 
-    constructor(value?: number) {
+    constructor(x: number, y: number, value?: number) {
+        this.x = x;
+        this.y = y;
+
+        // calcul du carré
+        this.square = 3 * Math.trunc((x - 1) / 3) + Math.trunc((y - 1) / 3);
+
         if (value === undefined) {
             this.possibleValues = [1, 2, 3, 4, 5, 6, 7, 8, 9];
             this.filledStart = false;
