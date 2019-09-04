@@ -49,7 +49,7 @@ export class Case {
     removePossibility(value: number): boolean {
         let i: number;
         if ((i = this.possibleValues.indexOf(value)) > -1) {
-            this.possibleValues.splice(i);
+            this.possibleValues.splice(i, 1);
             return true;
         }
         return false;
