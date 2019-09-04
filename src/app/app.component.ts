@@ -8,17 +8,17 @@ import { Sudoku } from 'src/models/sudoku.model';
     styleUrls: ['./app.component.css']
 })
 export class AppComponent implements OnInit {
-    
+
     values = [1, 2, 3, 4, 5, 6, 7, 8, 9];
-    
+
     sudoku: Sudoku;
-    
+
     processing: boolean;
-    
+
     ngOnInit(): void {
         this.processing = false;
     }
-    
+
     solve() {
         this.processing = true;
 
@@ -37,18 +37,18 @@ export class AppComponent implements OnInit {
                 }
             }
         }
-        
+
         this.sudoku.solveSudoku();
 
         this.printResults();
-        
+
         this.processing = false;
     }
 
     printResults() {
         this.sudoku.table.forEach(element => {
             let tableCase: HTMLInputElement = <HTMLInputElement>document.getElementById(element.x + '-' + element.y);
-            if(element.filledStart) {
+            if (element.filledStart) {
                 tableCase.setAttribute('class', 'input-filledStart');
             } else if (element.found) {
                 tableCase.value = "" + element.finalValue;
@@ -57,5 +57,25 @@ export class AppComponent implements OnInit {
                 tableCase.setAttribute('class', 'input-notFound');
             }
         });
+    }
+
+    backUserInputs() {
+        this.sudoku.table.forEach(element => {
+            let tableCase: HTMLInputElement = <HTMLInputElement>document.getElementById(element.x + '-' + element.y);
+            tableCase.setAttribute('class', 'input-empty');
+            if(!element.filledStart) {
+                tableCase.value = "";
+            }
+        });
+    }
+
+    reinitialization() {
+        for (var i of this.values) {
+            for (var j of this.values) {
+                let tableCase: HTMLInputElement = <HTMLInputElement>document.getElementById(i + '-' + j);
+                tableCase.value = "";
+                tableCase.setAttribute('class', 'input-empty');
+            }
+        }
     }
 }
