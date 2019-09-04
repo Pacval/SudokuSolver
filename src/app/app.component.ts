@@ -43,14 +43,18 @@ export class AppComponent implements OnInit {
         this.printResults();
         
         this.processing = false;
-
-        console.log(this.sudoku);
     }
 
     printResults() {
         this.sudoku.table.forEach(element => {
-            if(!element.filledStart && element.found) {
-                (<HTMLInputElement>document.getElementById(element.x + '-' + element.y)).value = "" + element.finalValue;
+            let tableCase: HTMLInputElement = <HTMLInputElement>document.getElementById(element.x + '-' + element.y);
+            if(element.filledStart) {
+                tableCase.setAttribute('class', 'input-filledStart');
+            } else if (element.found) {
+                tableCase.value = "" + element.finalValue;
+                tableCase.setAttribute('class', 'input-foundIA');
+            } else {
+                tableCase.setAttribute('class', 'input-notFound');
             }
         });
     }

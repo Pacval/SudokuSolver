@@ -3,7 +3,7 @@
     <!-- construction du visuel du jeu -->
     <span *ngFor='let h of values'>
       <span *ngFor='let w of values'>
-        <input id={{h}}-{{w}} class="case" type="number" min="1" max="9">
+        <input id={{h}}-{{w}} class="input-empty" type="number" min="1" max="9">
         <span *ngIf="w === 3 || w === 6" class="column-separator"></span>
       </span>
       <br />
