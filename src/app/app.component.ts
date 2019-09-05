@@ -20,6 +20,7 @@ export class AppComponent implements OnInit {
     }
 
     solve() {
+
         this.processing = true;
 
         this.sudoku = new Sudoku();
@@ -38,11 +39,34 @@ export class AppComponent implements OnInit {
             }
         }
 
-        this.sudoku.solveSudoku();
+        // on réinitialise le style des cases avant de lancer
+        this.backUserInputs();
 
-        this.printResults();
+        if (!this.checkInputErrors()) {
+            this.sudoku.solveSudoku();
+            this.printResults();
+        }
 
         this.processing = false;
+    }
+
+    checkInputErrors(): boolean {
+        let errors = this.sudoku.table
+            .filter(element => element.filledStart && // on prend toutes les cases préremplies
+                this.sudoku.table.filter(subElement => subElement.filledStart &&
+                    element.finalValue === subElement.finalValue && // on regarde si il existe une case qui a la meme valeur
+                    (element.x === subElement.x || element.y === subElement.y || element.square === subElement.square) && // et qui est soit sur la meme ligne, sur la meme colonne, ou dans le meme carré
+                    (element.x !== subElement.x || element.y !== subElement.y) // mais qui n'est pas la meme case que celle de base
+                ).length !== 0);
+
+        if (errors.length !== 0) {
+            errors.forEach(element => {
+                document.getElementById(element.x + '-' + element.y).setAttribute('class', 'input-error');
+            });
+            return true;
+        } else {
+            return false;
+        }
     }
 
     printResults() {
@@ -63,7 +87,7 @@ export class AppComponent implements OnInit {
         this.sudoku.table.forEach(element => {
             let tableCase: HTMLInputElement = <HTMLInputElement>document.getElementById(element.x + '-' + element.y);
             tableCase.setAttribute('class', 'input-empty');
-            if(!element.filledStart) {
+            if (!element.filledStart) {
                 tableCase.value = "";
             }
         });
