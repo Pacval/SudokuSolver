@@ -22,9 +22,11 @@ export class AppComponent implements OnInit {
 
     validateInput(x: number, y: number, event: KeyboardEvent) {
         event.preventDefault();
-        let tableCase: HTMLInputElement = <HTMLInputElement>document.getElementById(x + '-' + y);
-        if(tableCase.value === "") {
-            tableCase.value = String.fromCharCode(event.charCode);
+        if (event.charCode > 48 && event.charCode < 58) {
+            let tableCase: HTMLInputElement = <HTMLInputElement>document.getElementById(x + '-' + y);
+            if (tableCase.value === "") {
+                tableCase.value = String.fromCharCode(event.charCode);
+            }
         }
     }
 
