@@ -1,3 +1,4 @@
+
 export class Case {
 
     x: number;
@@ -16,7 +17,7 @@ export class Case {
         this.y = y;
 
         // calcul du carré
-        this.square = 3 * Math.trunc((x - 1) / 3) + Math.trunc((y - 1) / 3);
+        this.square = 3 * Math.trunc((x - 1) / 3) + Math.trunc((y - 1) / 3) + 1;
 
         if (value === undefined) {
             this.possibleValues = [1, 2, 3, 4, 5, 6, 7, 8, 9];
@@ -28,6 +29,14 @@ export class Case {
             this.filledStart = true;
             this.found = true;
             this.finalValue = value;
+        }
+    }
+
+    setValue(value: number) {
+        if(!this.found) {
+            this.finalValue = value;
+            this.possibleValues = [];
+            this.found = true;
         }
     }
 
