@@ -13,11 +13,14 @@
   </div>
 
   <div class="div-button">
+    <button class="button-solve" (click)="stepByStep()"><span>Step by step</span></button>
+  </div>
+  <div class="div-button">
     <button class="button-solve" (click)="solve()"><span>Solutionner</span></button>
   </div>
 
   <button (click)="backUserInputs()"><span>Retour aux inputs user</span></button>
-
+  
   <button (click)="reinitialization()"><span>Réinitialiser</span></button>
 
   <div *ngIf="processing === true">

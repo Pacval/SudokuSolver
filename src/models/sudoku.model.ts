@@ -24,6 +24,25 @@ export class Sudoku {
         }
     }
 
+    /** permet de visualiser la stratégie de l'IA pour résoudre le sudoku. Retourne true si bloqué */
+    stepByStep(): boolean {
+        if (!this.checkIfFound()) {
+            if (!this.eliminateFromGroups()) {
+                if (!this.onlyPossibleCaseInGroup()) {
+                    return true;
+                } else {
+                    console.log('méthode 3');
+                }
+            } else {
+                console.log('méthode 2');
+            }
+        } else {
+            console.log('méthode 1');
+        }
+        console.log('-----------');
+        return false;
+    }
+
     isCompleted(): boolean {
         return this.table.find((c) => !c.found) === undefined;
     }
@@ -61,11 +80,11 @@ export class Sudoku {
     }
 
     /**
-     * Pour chaque groupe de case, on regarde si un chiffre n'apparait dans les possibilités que d'une seule case
+     * Pour chaque groupe de case, on regarde si un chiffre n'apparait dans les possibilités que d'une seule case.
+     * ATTENTION : dès qu'un chiffre a été ajouté, il faut stopper l'éxécution de la fonction,
+     * pour pouvoir mettre à jour les cases des mêmes groupes que la case trouvée.
      */
     onlyPossibleCaseInGroup(): boolean {
-        let change = false;
-
         for (let group = 1; group <= 9; group++) {
             const line = this.table.filter(element => !element.found && element.x === group);
             const column = this.table.filter(element => !element.found && element.y === group);
@@ -75,20 +94,23 @@ export class Sudoku {
                 const matchingCasesForLine = line.filter(element => element.possibleValues.includes(numberSearched));
                 if (matchingCasesForLine.length === 1) {
                     matchingCasesForLine[0].setValue(numberSearched);
+                    return true;
                 }
 
                 const matchingCasesForColumn = column.filter(element => element.possibleValues.includes(numberSearched));
                 if (matchingCasesForColumn.length === 1) {
                     matchingCasesForColumn[0].setValue(numberSearched);
+                    return true;
                 }
 
                 const matchingCasesForSquare = square.filter(element => element.possibleValues.includes(numberSearched));
                 if (matchingCasesForSquare.length === 1) {
                     matchingCasesForSquare[0].setValue(numberSearched);
+                    return true;
                 }
             }
         }
 
-        return change;
+        return false;
     }
 }

@@ -31,13 +31,41 @@ export class AppComponent implements OnInit {
     }
 
     solve() {
-
         this.processing = true;
-
         this.sudoku = new Sudoku();
 
-        for (var i of this.values) {
-            for (var j of this.values) {
+        this.buildSudoku();
+
+        // on réinitialise le style des cases avant de lancer
+        this.backUserInputs();
+
+        if (!this.checkInputErrors()) {
+            this.sudoku.solveSudoku();
+            this.printResults();
+        }
+
+        this.processing = false;
+    }
+
+    stepByStep() {
+        this.processing = true;
+
+        if(this.sudoku.table.length === 0) {
+            this.buildSudoku();
+        }
+
+        if (!this.checkInputErrors()) {
+            this.sudoku.stepByStep();
+            this.printResults();
+        }
+
+
+        this.processing = false;
+    }
+
+    buildSudoku() {
+        for (let i = 1; i <= 9; i++) {
+            for (let j = 1; j <= 9; j++) {
 
                 let caseValue = (<HTMLInputElement>document.getElementById(i + '-' + j)).value;
 
@@ -49,16 +77,6 @@ export class AppComponent implements OnInit {
                 }
             }
         }
-
-        // on réinitialise le style des cases avant de lancer
-        this.backUserInputs();
-
-        if (!this.checkInputErrors()) {
-            this.sudoku.solveSudoku();
-            this.printResults();
-        }
-
-        this.processing = false;
     }
 
     checkInputErrors(): boolean {
