@@ -1,4 +1,5 @@
 import { Case } from "./case.model";
+import { element } from 'protractor';
 
 export class Sudoku {
 
@@ -29,7 +30,12 @@ export class Sudoku {
         if (!this.checkIfFound()) {
             if (!this.eliminateFromGroups()) {
                 if (!this.onlyPossibleCaseInGroup()) {
-                    return true;
+                    if (!this.segmentsInSquare()) {
+                        console.log('the end');
+                        return true;
+                    } else {
+                        console.log('méthode 4');
+                    }
                 } else {
                     console.log('méthode 3');
                 }
@@ -49,6 +55,10 @@ export class Sudoku {
 
     /* METHODES DE RESOLUTION */
 
+    /**
+     * Méthode 1
+     * Si la case n'a qu'une possibilité, alors c'est ce chiffre restant
+     */
     checkIfFound(): boolean {
         let change = false;
         this.table.forEach(element => {
@@ -60,6 +70,7 @@ export class Sudoku {
     }
 
     /**
+     * Méthode 2
      * Pour chaque case remplie, on récupère toutes les cases non remplies sur la meme ligne, colonne ou carré,
      * et on enlève la possibilité de la valeur de la case de base
      */
@@ -80,6 +91,7 @@ export class Sudoku {
     }
 
     /**
+     * Méthode 3
      * Pour chaque groupe de case, on regarde si un chiffre n'apparait dans les possibilités que d'une seule case.
      * ATTENTION : dès qu'un chiffre a été ajouté, il faut stopper l'éxécution de la fonction,
      * pour pouvoir mettre à jour les cases des mêmes groupes que la case trouvée.
@@ -112,5 +124,83 @@ export class Sudoku {
         }
 
         return false;
+    }
+
+
+    /**
+     * Méthode 4
+     * Quand dans un carré, un chiffre n'est possible que sur un segment, alors le candidat peut être exclu de cette colonne/ligne dans les autres carrés.
+     */
+    segmentsInSquare(): boolean {
+        let change = false;
+
+        for (let square = 1; square < 10; square++) {
+            const squareEmptyCases = this.table.filter(element => element.square === square && !element.found);
+
+            for (let numberSearched = 1; numberSearched < 10; numberSearched++) {
+                const possibleCases = squareEmptyCases.filter(element => element.possibleValues.includes(numberSearched));
+
+                // Cette méthode n'est possible à utiliser que si 2 ou 3 cases d'un carré on la même possibilité
+                // On sépare ces 2 cas pour tester la correspondance des cases plus simplement
+                if (possibleCases.length === 2) {
+                    if (possibleCases[0].x === possibleCases[1].x) {
+                        // les 2 cases sont sur la meme ligne -> on enlève cette possibilité des autres cases de la ligne
+                        this.table
+                            .filter(element => element.x === possibleCases[0].x
+                                && element.y !== possibleCases[0].y
+                                && element.y !== possibleCases[1].y)
+                            .forEach(element => {
+                                if (element.removePossibility(numberSearched)) {
+                                    change = true;
+                                }
+                            });
+
+                    } else if (possibleCases[0].y === possibleCases[1].y) {
+                        // les 2 cases sont sur la meme colonne -> on enlève cette possibilité des autres cases de la colonne
+                        this.table
+                            .filter(element => element.y === possibleCases[0].y
+                                && element.x !== possibleCases[0].x
+                                && element.x !== possibleCases[1].x)
+                            .forEach(element => {
+                                if (element.removePossibility(numberSearched)) {
+                                    change = true;
+                                }
+                            });
+                    }
+
+                } else if (possibleCases.length === 3) {
+                    // Meme principe mais on doit tester la correspondance des 3 cases
+
+                    if (possibleCases[0].x === possibleCases[1].x && possibleCases[1].x === possibleCases[2].x) {
+
+                        this.table
+                            .filter(element => element.x === possibleCases[0].x
+                                && element.y !== possibleCases[0].y
+                                && element.y !== possibleCases[1].y
+                                && element.y !== possibleCases[2].y)
+                            .forEach(element => {
+                                if (element.removePossibility(numberSearched)) {
+                                    change = true;
+                                }
+                            });
+
+                    } else if (possibleCases[0].y === possibleCases[1].y && possibleCases[1].y === possibleCases[2].y) {
+
+                        this.table
+                            .filter(element => element.y === possibleCases[0].y
+                                && element.x !== possibleCases[0].x
+                                && element.x !== possibleCases[1].x
+                                && element.x !== possibleCases[2].x)
+                            .forEach(element => {
+                                if (element.removePossibility(numberSearched)) {
+                                    change = true;
+                                }
+                            });
+                    }
+                }
+            }
+        }
+
+        return change;
     }
 }

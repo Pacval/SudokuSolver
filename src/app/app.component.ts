@@ -120,6 +120,7 @@ export class AppComponent implements OnInit {
                 tableCase.value = "";
             }
         });
+        this.sudoku = new Sudoku();
     }
 
     reinitialization() {
@@ -130,5 +131,6 @@ export class AppComponent implements OnInit {
                 tableCase.setAttribute('class', 'input-empty');
             }
         }
+        this.sudoku = new Sudoku();
     }
 }
