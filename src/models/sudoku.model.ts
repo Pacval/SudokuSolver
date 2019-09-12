@@ -13,11 +13,16 @@ export class Sudoku {
         let cantDoMore = false;
 
         while (!this.isCompleted() && !cantDoMore) {
-            if (!this.checkIfFound()) {
-                // Si la 1ere methode retourne true, qqchose a été modifié. Donc on continue. Sinon, rien n'a été modifié, donc on essaye un algo plus poussé
-                if (!this.eliminateFromGroups()) {
-                    if (!this.onlyPossibleCaseInGroup()) {
-                        cantDoMore = true;
+            if (!this.eliminateFromGroups()) {
+                if (!this.loneSingles()) {
+                    if (!this.hiddenSingles()) {
+                        if (!this.segmentsInSquare()) {
+                            if (!this.segmentsInLine()) {
+                                if (!this.segmentsInColumn()) {
+                                    cantDoMore = true;
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -28,33 +33,35 @@ export class Sudoku {
      * Permet de visualiser la stratégie de l'IA pour résoudre le sudoku. Retourne true si bloqué
      */
     stepByStep(): boolean {
-        if (!this.checkIfFound()) {
+        if (!this.isCompleted()) {
             if (!this.eliminateFromGroups()) {
-                if (!this.onlyPossibleCaseInGroup()) {
-                    if (!this.segmentsInSquare()) {
-                        if (!this.segmentsInLine()) {
-                            if (!this.segmentsInColumn()) {
-                                console.log('the end');
-                                return true;
+                if (!this.loneSingles()) {
+                    if (!this.hiddenSingles()) {
+                        if (!this.segmentsInSquare()) {
+                            if (!this.segmentsInLine()) {
+                                if (!this.segmentsInColumn()) {
+                                    console.log('the end');
+                                    return true;
+                                } else {
+                                    console.log('méthode 2.3');
+                                }
                             } else {
-                                console.log('méthode 4.3');
+                                console.log('méthode 2.2');
                             }
                         } else {
-                            console.log('méthode 4.2');
+                            console.log('méthode 2.1');
                         }
                     } else {
-                        console.log('méthode 4.1');
+                        console.log('méthode 1.2');
                     }
                 } else {
-                    console.log('méthode 3');
+                    console.log('méthode 1.1');
                 }
             } else {
-                console.log('méthode 2');
+                console.log('méthode gnl');
             }
-        } else {
-            console.log('méthode 1');
+            console.log('-----------');
         }
-        console.log('-----------');
         return false;
     }
 
@@ -65,21 +72,8 @@ export class Sudoku {
     /* METHODES DE RESOLUTION */
 
     /**
-     * Méthode 1
-     * Si la case n'a qu'une possibilité, alors c'est ce chiffre restant
-     */
-    checkIfFound(): boolean {
-        let change = false;
-        this.table.forEach(element => {
-            if (element.checkIfFound()) {
-                change = true;
-            }
-        });
-        return change;
-    }
-
-    /**
-     * Méthode 2
+     * Méthode générale
+     * 
      * Pour chaque case remplie, on récupère toutes les cases non remplies sur la meme ligne, colonne ou carré,
      * et on enlève la possibilité de la valeur de la case de base
      */
@@ -100,12 +94,31 @@ export class Sudoku {
     }
 
     /**
-     * Méthode 3
-     * Pour chaque groupe de case, on regarde si un chiffre n'apparait dans les possibilités que d'une seule case.
+     * Méthode 1.1
+     * 
+     * On peut directement valider un chiffre dans une case quand il est la seule possibilité,
+     * compte tenu de la colonne, la ligne et du carré qui contiennent la case en question.
+     */
+    loneSingles(): boolean {
+        let change = false;
+        this.table.forEach(element => {
+            if (element.checkIfFound()) {
+                change = true;
+            }
+        });
+        return change;
+    }
+
+
+    /**
+     * Méthode 1.2
+     * 
+     * Quand une case est la seule dans un groupe à pouvoir recevoir un chiffre, elle doit contenir ce chiffre.
+     * 
      * ATTENTION : dès qu'un chiffre a été ajouté, il faut stopper l'éxécution de la fonction,
      * pour pouvoir mettre à jour les cases des mêmes groupes que la case trouvée.
      */
-    onlyPossibleCaseInGroup(): boolean {
+    hiddenSingles(): boolean {
         for (let group = 1; group <= 9; group++) {
             const line = this.table.filter(element => !element.found && element.x === group);
             const column = this.table.filter(element => !element.found && element.y === group);
@@ -137,7 +150,8 @@ export class Sudoku {
 
 
     /**
-     * Méthode 4.1
+     * Méthode 2.1
+     * 
      * Quand dans un carré, un chiffre n'est possible que sur un segment, alors le candidat peut être exclu de cette colonne/ligne dans les autres carrés
      */
     segmentsInSquare(): boolean {
@@ -207,7 +221,8 @@ export class Sudoku {
     }
 
     /**
-     * Méthode 4.2
+     * Méthode 2.2
+     * 
      * Quand dans une ligne un seul carré peut contenir un chiffre, ce chiffre peut être exclu des autres cases de ce carré
      */
     segmentsInLine(): boolean {
@@ -252,7 +267,8 @@ export class Sudoku {
     }
 
     /**
-     * Méthode 4.3
+     * Méthode 2.3
+     * 
      * Quand dans une colonne un seul carré peut contenir un chiffre, ce chiffre peut être exclu des autres cases de ce carré
      */
     segmentsInColumn(): boolean {

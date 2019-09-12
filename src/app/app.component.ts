@@ -32,13 +32,12 @@ export class AppComponent implements OnInit {
 
     solve() {
         this.processing = true;
-        this.sudoku = new Sudoku();
-
-        this.buildSudoku();
-
+        
         // on réinitialise le style des cases avant de lancer
         this.backUserInputs();
 
+        this.buildSudoku();
+        
         if (!this.checkInputErrors()) {
             this.sudoku.solveSudoku();
             this.printResults();
